@@ -93,10 +93,11 @@ public class BMPCollectionInputFormat extends FileInputFormat<NullWritable, Byte
             long flen = status.getLen();
             Path path = status.getPath();
 
-            for (long offset = 0; offset < flen; offset += split_size) {
-                long size = Math.min(split_size, flen - offset);
-                splits.add(new FileSplit(path, offset, size, null));
-            }
+            /*
+             * WRITE YOUR CODE HERE:
+             * you have to create splits using
+             * splits.add(new FileSplit(path, offset, size, null));
+             */
         }
 
         return splits;
