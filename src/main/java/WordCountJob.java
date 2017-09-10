@@ -15,25 +15,26 @@ import java.io.IOException;
 
 public class WordCountJob extends Configured implements Tool {
     public static class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+        static final IntWritable one = new IntWritable(1);
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
             // split by space symbols (space, tab, ...)
             for(String word: line.split("\\s"))
-                context.write(new Text(word), new IntWritable(1));
+                context.write(new Text(word), one);
         }
     }
 
     public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         @Override
-        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int summ = 0;
-            for(IntWritable i: values) {
-                summ += i.get();
+        protected void reduce(Text word, Iterable<IntWritable> nums, Context context) throws IOException, InterruptedException {
+            int sum = 0;
+            for(IntWritable i: nums) {
+                sum += i.get();
             }
 
             // produce pairs of "word" <-> amount
-            context.write(key, new IntWritable(summ));
+            context.write(word, new IntWritable(sum));
         }
     }
 
